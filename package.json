@@ -1,0 +1,37 @@
+{
+  "name": "myhealform-server",
+  "version": "1.0.0",
+  "description": "The myHEALFORM backend manages all CRUD requests for bookings, appointments, their corresponding payments and also the user authentication.",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development nodemon index",
+    "build": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=staging nyc --reporter=lcov mocha --timeout 20000 --require @babel/register --exit",
+    "lint": "eslint ./",
+    "prettier": "prettier --print-width 120 --single-quote --write  \"**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HEALFORM/myhealform-server.git"
+  },
+  "keywords": [
+    "healform",
+    "myhealform",
+    "bookings",
+    "appointments",
+    "payments",
+    "cryo"
+  ],
+  "author": "Domenik Toefflinger",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/HEALFORM/myhealform-server/issues"
+  },
+  "homepage": "https://github.com/HEALFORM/myhealform-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  }
+}
