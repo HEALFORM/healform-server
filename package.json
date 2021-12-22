@@ -1,7 +1,7 @@
 {
-  "name": "myhealform-server",
+  "name": "healform-server",
   "version": "1.0.0",
-  "description": "The myHEALFORM backend manages all CRUD requests for bookings, appointments, their corresponding payments and also the user authentication.",
+  "description": "myHEALFORM server.",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon index",
@@ -12,26 +12,43 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HEALFORM/myhealform-server.git"
+    "url": "git+https://github.com/HEALFORM/healform-server.git"
   },
   "keywords": [
-    "healform",
     "myhealform",
-    "bookings",
-    "appointments",
-    "payments",
-    "cryo"
+    "api",
+    "acuity",
+    "scheduling",
+    "stripe",
+    "slack",
+    "server",
+    "middleware",
+    "express"
   ],
   "author": "Domenik Toefflinger",
-  "license": "GPL-3.0",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/HEALFORM/myhealform-server/issues"
+    "url": "https://github.com/HEALFORM/healform-server/issues"
   },
-  "homepage": "https://github.com/HEALFORM/myhealform-server#readme",
+  "homepage": "https://github.com/HEALFORM/healform-server#readme",
   "dependencies": {
-    "body-parser": "^1.19.0"
-  },
-  "devDependencies": {
-    "typescript": "^4.4.4"
+    "@sentry/node": "^6.16.1",
+    "@sentry/tracing": "^6.16.1",
+    "axios": "^0.24.0",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
+    "custom-env": "^2.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "express-favicon": "^2.0.1",
+    "express-params": "0.0.3",
+    "express-swagger-generator": "^1.1.17",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.2",
+    "morgan": "^1.10.0",
+    "stripe": "^8.194.0"
   }
 }
