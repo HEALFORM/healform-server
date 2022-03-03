@@ -26,7 +26,7 @@ const config = require('./config/database');
 /* ===================
    Import routes
 =================== */
-const api = require('./routes/api');
+const acuity = require('./routes/acuity');
 
 /* ===================
    Error Tracking
@@ -111,7 +111,7 @@ expressSwagger(options);
 /* ===================
    Routes
 =================== */
-app.use('/api', api);
+app.use('/acuity', acuity);
 
 /* ===================
    Render base pages

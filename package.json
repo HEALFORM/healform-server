@@ -34,7 +34,6 @@
   "dependencies": {
     "@sentry/node": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
-    "axios": "^0.24.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
@@ -47,8 +46,11 @@
     "express-params": "0.0.3",
     "express-swagger-generator": "^1.1.17",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "mongoose": "^6.1.2",
     "morgan": "^1.10.0",
+    "node-fetch": "^2.6.7",
     "stripe": "^8.194.0"
   }
 }
