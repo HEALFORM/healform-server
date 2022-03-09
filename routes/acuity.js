@@ -83,4 +83,63 @@ router.get('/:email/appointments/next', async (req, res) => {
   }
 });
 
+/* ===============================================================
+   GET /acuity/:email/appointments/future
+=============================================================== */
+/**
+ * Get the future scheduled appointment by specific e-mail.
+ * @route GET /acuity/:email/appointments/future
+ * @group Appointments API - Get all the information for appointments by specific user.
+ * @returns {object} 200 - An array of user info
+ * @returns {Error} default - Unexpected error
+ */
+router.get('/:email/appointments/future', async (req, res) => {
+  var email = req.params.email;
+  const url = acuity + '/appointments?email=' + email;
+  // Search database for all blog posts
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      var futureAppointments = json.filter(x => Date.parse(x.datetime) > new Date());
+      var futureAppointments = _.sortBy(futureAppointments, function (o) {
+        return new moment(o.datetime)
+      })
+      res.status(200).json(futureAppointments);
+    })
+    .catch(error => {
+      Sentry.captureException(error);
+      res.json({
+        success: false,
+        message: 'Die Termine konnten nicht geladen werden.'
+      });
+      throw error;
+    });
+});
+
+/* ===============================================================
+    Route: Get all past Appointments by User
+=============================================================== */
+router.get('/:email/appointments/past', async (req, res) => {
+  var email = req.params.email;
+  const url = acuity + '/appointments?email=' + email;
+  // Search database for all blog posts
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      var pastAppointments = json.filter(x => Date.parse(x.datetime) < new Date());
+      var pastAppointments = _.sortBy(pastAppointments, function (o) {
+        return new moment(o.datetime)
+      }).reverse();
+      res.status(200).json(pastAppointments);
+    })
+    .catch(error => {
+      Sentry.captureException(error);
+      res.json({
+        success: false,
+        message: 'Die Termine konnten nicht geladen werden.'
+      });
+      throw error;
+    });
+});
+
 module.exports = router;
