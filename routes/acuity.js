@@ -44,102 +44,52 @@ router.get('/:email/appointments', async (req, res) => {
 });
 
 /* ===============================================================
-   GET /acuity/:email/appointments/next
+   GET /acuity/:email/appointment/:id
 =============================================================== */
 /**
- * Get the next scheduled appointment by specific e-mail.
- * @route GET /acuity/:email/appointments/next
- * @group Appointments API - Get all the information for appointments by specific user.
- * @returns {object} 200 - An array of user info
+ * Get detailed appointment information by specific e-mail and ID.
+ * @route GET /acuity/:email/appointment/:id
+ * @group Acuity API - Get all the information for appointments by specific user.
+ * @returns {object} 200 - An array of appointments info
  * @returns {Error} default - Unexpected error
  */
-router.get('/:email/appointments/next', async (req, res) => {
-  const email = req.params.email;
-  const url = acuity + '/appointments?email=' + email;
-
-  if (!email) {
+router.get('/:email/appointment/:id', async (req, res) => {
+  if (!req.params.id) {
     res.json({
       success: false,
-      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
-    });
+      message: 'No appointment ID was provided.'
+    }); // Return error message
   } else {
-    fetch(url)
-      .then(response => response.json())
-      .then(json => {
-        var nextAppointments = json.filter(x => Date.parse(x.datetime) > new Date());
-        var nextAppointments = _.sortBy(nextAppointments, function (o) {
-          return new moment(o.datetime)
+    if (!req.params.email) {
+      res.json({
+        success: false,
+        message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+      });
+    } else {
+      const id = req.params.id;
+      const url = acuity + '/appointments/' + id;
+      fetch(url)
+        .then(response => response.json())
+        .then(json => {
+          if (json.email === req.params.email) {
+            res.json(json);
+          } else {
+            res.status(404).json({
+              success: false,
+              message: 'You are not authorized to edit this apoointment.'
+            });
+          }
         })
-        res.status(200).json(nextAppointments[0]);
-      })
-      .catch(error => {
-        Sentry.captureException(error);
-        res.json({
-          success: false,
-          message: 'Die Termine konnten nicht geladen werden.'
+        .catch(error => {
+          Sentry.captureException(error);
+          res.json({
+            success: false,
+            message: 'Die Termine konnten nicht geladen werden.'
+          });
+          throw error;
         });
-        throw error;
-      });
+    }
   }
-});
-
-/* ===============================================================
-   GET /acuity/:email/appointments/future
-=============================================================== */
-/**
- * Get the future scheduled appointment by specific e-mail.
- * @route GET /acuity/:email/appointments/future
- * @group Appointments API - Get all the information for appointments by specific user.
- * @returns {object} 200 - An array of user info
- * @returns {Error} default - Unexpected error
- */
-router.get('/:email/appointments/future', async (req, res) => {
-  var email = req.params.email;
-  const url = acuity + '/appointments?email=' + email;
-  // Search database for all blog posts
-  fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      var futureAppointments = json.filter(x => Date.parse(x.datetime) > new Date());
-      var futureAppointments = _.sortBy(futureAppointments, function (o) {
-        return new moment(o.datetime)
-      })
-      res.status(200).json(futureAppointments);
-    })
-    .catch(error => {
-      Sentry.captureException(error);
-      res.json({
-        success: false,
-        message: 'Die Termine konnten nicht geladen werden.'
-      });
-      throw error;
-    });
-});
-
-/* ===============================================================
-    Route: Get all past Appointments by User
-=============================================================== */
-router.get('/:email/appointments/past', async (req, res) => {
-  var email = req.params.email;
-  const url = acuity + '/appointments?email=' + email;
-  // Search database for all blog posts
-  fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      var pastAppointments = json.filter(x => Date.parse(x.datetime) < new Date());
-      var pastAppointments = _.sortBy(pastAppointments, function (o) {
-        return new moment(o.datetime)
-      }).reverse();
-      res.status(200).json(pastAppointments);
-    })
-    .catch(error => {
-      Sentry.captureException(error);
-      res.json({
-        success: false,
-        message: 'Die Termine konnten nicht geladen werden.'
-      });
-      throw error;
-    });
 });
 
 module.exports = router;
