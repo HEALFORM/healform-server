@@ -54,29 +54,31 @@ router.get('/:email/appointments', async (req, res) => {
  * @returns {Error} default - Unexpected error
  */
 router.get('/:email/appointment/:id', async (req, res) => {
-  if (!req.params.id) {
+  const email = req.params.email;
+  const id = req.params.id;
+  const url = acuity + '/appointments?email=' + email;
+
+  if (!email) {
     res.json({
       success: false,
-      message: 'No appointment ID was provided.'
-    }); // Return error message
+      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+    });
   } else {
-    if (!req.params.email) {
+    if (!id) {
       res.json({
         success: false,
-        message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+        message: 'Es wurde keine Termin-ID an den Server übermittelt.'
       });
     } else {
-      const id = req.params.id;
-      const url = acuity + '/appointments/' + id;
       fetch(url)
         .then(response => response.json())
         .then(json => {
-          if (json.email === req.params.email) {
-            res.json(json);
+          if (json.email === email) {
+            res.status(200).json(json);
           } else {
-            res.status(404).json({
+            res.status(403).json({
               success: false,
-              message: 'You are not authorized to edit this apoointment.'
+              message: 'Du bist nicht berechtigt diesen Termin einzusehen.'
             });
           }
         })
@@ -84,11 +86,35 @@ router.get('/:email/appointment/:id', async (req, res) => {
           Sentry.captureException(error);
           res.json({
             success: false,
-            message: 'Die Termine konnten nicht geladen werden.'
+            message: 'Der Termin konnte nicht geladen werden.'
           });
           throw error;
         });
     }
+  }
+});
+
+/* ===============================================================
+      Route: Get all Certificates by User
+  =============================================================== */
+router.get('/:email/certificates', async (req, res) => {
+  const email = req.params.email;
+  const url = acuity + '/certificates?email=' + email;
+
+  if (!email) {
+    res.json({
+      success: false,
+      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+    });
+  } else {
+    fetch(url)
+      .then(response => response.json())
+      .then(json => {
+        res.json(json);
+      })
+      .catch(error => {
+        throw error;
+      });
   }
 });
 
