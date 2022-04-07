@@ -113,9 +113,33 @@ router.get('/:email/certificates', async (req, res) => {
         res.json(json);
       })
       .catch(error => {
+        Sentry.captureException(error);
+        res.json({
+          success: false,
+          message: 'Die Zertifikate konnten nicht geladen werden.'
+        });
         throw error;
       });
   }
+});
+
+router.get('/products', async (req, res) => {
+  const email = req.params.email;
+  const url = acuity + '/products';
+
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      res.json(json);
+    })
+    .catch(error => {
+      Sentry.captureException(error);
+      res.json({
+        success: false,
+        message: 'Die Produkte konnten nicht geladen werden.'
+      });
+      throw error;
+    });
 });
 
 module.exports = router;
