@@ -56,7 +56,7 @@ router.get('/:email/appointments', async (req, res) => {
 router.get('/:email/appointment/:id', async (req, res) => {
   const email = req.params.email;
   const id = req.params.id;
-  const url = acuity + '/appointments?email=' + email;
+  const url = acuity + '/appointments/' + id;
 
   if (!email) {
     res.json({
@@ -124,7 +124,6 @@ router.get('/:email/certificates', async (req, res) => {
 });
 
 router.get('/products', async (req, res) => {
-  const email = req.params.email;
   const url = acuity + '/products';
 
   fetch(url)
