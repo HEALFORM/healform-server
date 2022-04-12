@@ -141,4 +141,41 @@ router.get('/products', async (req, res) => {
     });
 });
 
+router.get('/locations', async (req, res) => {
+  const url = acuity + '/calendars';
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      res.json(json);
+    });
+});
+
+router.get('/availability/dates/:id/:month/:locationId', async (req, res) => {
+  var id = req.params.id;
+  var month = req.params.month;
+  var locationId = req.params.locationId;
+  const url =
+    acuity +
+    '/availability/dates?appointmentTypeID=' +
+    id +
+    '&month=' +
+    month +
+    '&calendarID=' +
+    locationId;
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      res.json(json);
+    });
+});
+
+router.get('/appointment-types', async (req, res) => {
+  const url = acuity + '/appointment-types';
+  fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      res.json(json);
+    });
+});
+
 module.exports = router;
