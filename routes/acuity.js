@@ -1,11 +1,12 @@
 const express = require('express');
+
 const router = express.Router();
 const Sentry = require('@sentry/node');
-const fetch = require("node-fetch");
-const _ = require('lodash')
-const moment = require('moment')
+const fetch = require('node-fetch');
+const _ = require('lodash');
+const moment = require('moment');
 
-const acuity = 'https://' + process.env.ACUITY_API_USER + ':' + process.env.ACUITY_API_PASSWORD + '@' + process.env.ACUITY_API_URL;
+const acuity = `https://${process.env.ACUITY_API_USER}:${process.env.ACUITY_API_PASSWORD}@${process.env.ACUITY_API_URL}`;
 
 /* ===============================================================
    GET /acuity/:email/appointments
@@ -18,25 +19,25 @@ const acuity = 'https://' + process.env.ACUITY_API_USER + ':' + process.env.ACUI
  * @returns {Error} default - Unexpected error
  */
 router.get('/:email/appointments', async (req, res) => {
-  const email = req.params.email;
-  const url = acuity + '/appointments?email=' + email;
+  const { email } = req.params;
+  const url = `${acuity}/appointments?email=${email}`;
 
   if (!email) {
     res.json({
       success: false,
-      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.',
     });
-    } else {
+  } else {
     fetch(url)
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         res.status(200).json(json);
       })
-      .catch(error => {
+      .catch((error) => {
         Sentry.captureException(error);
         res.json({
           success: false,
-          message: 'Die Termine konnten nicht geladen werden.'
+          message: 'Die Termine konnten nicht geladen werden.',
         });
         throw error;
       });
@@ -54,69 +55,64 @@ router.get('/:email/appointments', async (req, res) => {
  * @returns {Error} default - Unexpected error
  */
 router.get('/:email/appointment/:id', async (req, res) => {
-  const email = req.params.email;
-  const id = req.params.id;
-  const url = acuity + '/appointments/' + id;
+  const { email } = req.params;
+  const { id } = req.params;
+  const url = `${acuity}/appointments/${id}`;
 
   if (!email) {
     res.json({
       success: false,
-      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.',
     });
-  } else {
-    if (!id) {
-      res.json({
-        success: false,
-        message: 'Es wurde keine Termin-ID an den Server übermittelt.'
-      });
-    } else {
-      fetch(url)
-        .then(response => response.json())
-        .then(json => {
-          if (json.email === email) {
-            res.status(200).json(json);
-          } else {
-            res.status(403).json({
-              success: false,
-              message: 'Du bist nicht berechtigt diesen Termin einzusehen.'
-            });
-          }
-        })
-        .catch(error => {
-          Sentry.captureException(error);
-          res.json({
-            success: false,
-            message: 'Der Termin konnte nicht geladen werden.'
-          });
-          throw error;
-        });
-    }
-  }
-});
-
-/* ===============================================================
-      Route: Get all Certificates by User
-  =============================================================== */
-router.get('/:email/certificates', async (req, res) => {
-  const email = req.params.email;
-  const url = acuity + '/certificates?email=' + email;
-
-  if (!email) {
+  } else if (!id) {
     res.json({
       success: false,
-      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.'
+      message: 'Es wurde keine Termin-ID an den Server übermittelt.',
     });
   } else {
     fetch(url)
-      .then(response => response.json())
-      .then(json => {
-        res.json(json);
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.email === email) {
+          res.status(200).json(json);
+        } else {
+          res.status(403).json({
+            success: false,
+            message: 'Du bist nicht berechtigt diesen Termin einzusehen.',
+          });
+        }
       })
-      .catch(error => {
+      .catch((error) => {
         Sentry.captureException(error);
         res.json({
           success: false,
-          message: 'Die Zertifikate konnten nicht geladen werden.'
+          message: 'Der Termin konnte nicht geladen werden.',
+        });
+        throw error;
+      });
+  }
+});
+
+router.get('/:email/certificates', async (req, res) => {
+  const { email } = req.params;
+  const url = `${acuity}/certificates?email=${email}`;
+
+  if (!email) {
+    res.json({
+      success: false,
+      message: 'Es wurde keine E-Mail Adresse an den Server übermittelt.',
+    });
+  } else {
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => {
+        res.json(json);
+      })
+      .catch((error) => {
+        Sentry.captureException(error);
+        res.json({
+          success: false,
+          message: 'Die Zertifikate konnten nicht geladen werden.',
         });
         throw error;
       });
@@ -124,56 +120,60 @@ router.get('/:email/certificates', async (req, res) => {
 });
 
 router.get('/products', async (req, res) => {
-  const url = acuity + '/products';
-
+  const url = `${acuity}/products`;
   fetch(url)
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       res.json(json);
     })
-    .catch(error => {
+    .catch((error) => {
       Sentry.captureException(error);
       res.json({
         success: false,
-        message: 'Die Produkte konnten nicht geladen werden.'
+        message: 'Die Produkte konnten nicht geladen werden.',
       });
       throw error;
     });
 });
 
 router.get('/locations', async (req, res) => {
-  const url = acuity + '/calendars';
+  const url = `${acuity}/calendars`;
   fetch(url)
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       res.json(json);
     });
 });
 
 router.get('/availability/dates/:id/:month/:locationId', async (req, res) => {
-  var id = req.params.id;
-  var month = req.params.month;
-  var locationId = req.params.locationId;
-  const url =
-    acuity +
-    '/availability/dates?appointmentTypeID=' +
-    id +
-    '&month=' +
-    month +
-    '&calendarID=' +
-    locationId;
+  const { id } = req.params;
+  const { month } = req.params;
+  const { locationId } = req.params;
+  const url = `${acuity}/availability/dates?appointmentTypeID=${id}&month=${month}&calendarID=${locationId}`;
   fetch(url)
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
+      res.json(json);
+    });
+});
+
+router.get('/availability/times/:id/:date/:locationId', async (req, res) => {
+  const { id } = req.params;
+  const { date } = req.params;
+  const { locationId } = req.params;
+  const url = `${acuity}/availability/times?appointmentTypeID=${id}&date=${date}&calendarID=${locationId}`;
+  fetch(url)
+    .then((response) => response.json())
+    .then((json) => {
       res.json(json);
     });
 });
 
 router.get('/appointment-types', async (req, res) => {
-  const url = acuity + '/appointment-types';
+  const url = `${acuity}/appointment-types`;
   fetch(url)
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       res.json(json);
     });
 });
