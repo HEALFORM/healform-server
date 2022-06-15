@@ -3,8 +3,6 @@ const express = require('express');
 const router = express.Router();
 const Sentry = require('@sentry/node');
 const fetch = require('node-fetch');
-const _ = require('lodash');
-const moment = require('moment');
 
 const acuity = `https://${process.env.ACUITY_API_USER}:${process.env.ACUITY_API_PASSWORD}@${process.env.ACUITY_API_URL}`;
 
